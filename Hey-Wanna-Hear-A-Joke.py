@@ -56,18 +56,28 @@ def main():
                     TTS(f"Oh Noes. Something has gone wrong!\nError: {joke_response}")
 
         elif user_input == 3:
-            pro_req = requests.get(urls["Programming_joke"], headers={"Accept": "application/json"})
+            while True:
+                pro_req = requests.get(urls["Programming_joke"], headers={"Accept": "application/json"})
 
-            if pro_req.status_code == 200:
-                # I don't know why but but sometimes it just prints 'None' 
-                # idk how to fix it. so is just gonna stay there. :P 
-                print(f"Joke(Programming Joke): {pro_req.json().get("joke")}\n")
-                TTS(pro_req.json().get("joke"))
-            else:
-                print(f"Oh Noes. Something has gone wrong!\nError: {pro_req}")
-                TTS(f"Oh Noes. Something has gone wrong!\nError: {pro_req}")
-                continue
-            continue
+                if pro_req.status_code == 200:
+                    json = pro_req.json()
+                    if json["type"] == "twopart":
+
+                        print(f"Joke(Programming Joke): {json["setup"]}\n")
+                        TTS(json["setup"]) 
+                        time.sleep(1)
+                        print(f"Punchline: {json["delivery"]}")
+                        TTS(json["delivery"])
+                    else:
+                        continue
+                    main()
+
+
+                else:
+                    print(f"Oh Noes. Something has gone wrong!\nError: {pro_req}")
+                    TTS(f"Oh Noes. Something has gone wrong!\nError: {pro_req}")
+                    continue
+                
         elif user_input == 4:
             print("Goodbye!")
             TTS("GoodBye!")
